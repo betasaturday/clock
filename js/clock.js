@@ -1,4 +1,23 @@
-function Clock (screen) {
+function Clock(screen) {
+	var delta;
+
+	this.render = function () {
+		screen.innerHTML = this.getTimeString();
+	};
+
+	this.render();
+	setTimeout(firstUpdate, getFirstDelay());
+
+	function getFirstDelay() {
+		var now = new Date(),
+			next = Math.ceil(now/delay)*delay;
+		return next - now;
+	}
+
+	return this;
+}
+
+function _Clock (screen) {
     'use strict';
 
     
