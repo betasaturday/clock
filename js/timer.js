@@ -2,7 +2,9 @@ Timer  = (function () {
 
 	function Constructor(_screen, _delta) {
 		var screen = _screen,
-			delta = _delta;
+			delta = _delta,
+			interval,
+			timeout;
 
 		this.getDelta = function () {
 			return delta;
@@ -12,18 +14,36 @@ Timer  = (function () {
 			return screen;
 		};
 
-		this.init();
+		this.setInterval = function (_interval) {
+			interval = _interval;
+		};
+		this.getInterval = function () {
+			return interval;
+		};
+		this.setTimeout = function (_timeout) {
+			timeout = _timeout;
+		};
+		this.getTimeout = function () {
+			return timeout;
+		};
 
+		this.init();
+		return this;
 	}
 
 
 	Constructor.prototype.init = function () {
 		this.render();
-		setTimeout(this.firstRerender.bind(this), this.getFirstDelay());
+		this.setTimeout(setTimeout(this.firstRerender.bind(this), this.getFirstDelay()));
+	};
+
+	Constructor.prototype.kill = function () {
+		clearInterval(this.getInterval());
+		clearTimeout(this.getTimeout());
 	};
 
 	Constructor.prototype.firstRerender = function () {
-		setInterval(this.render.bind(this), this.getDelta());
+		this.setInterval(setInterval(this.render.bind(this), this.getDelta()));
 	};
 
 	Constructor.prototype.getFirstDelay = function () {
