@@ -8,7 +8,8 @@ ShortTimer  = (function () {
 	helper.extend(Constructor, Timer);
 
 	Constructor.prototype.getTimeString = function (now) {
-		return this.super.pad2(now.getHours()) + ':' + this.super.pad2(now.getMinutes());
+		return this.super.formatWithZeros(now.getHours())
+            + ':' + this.super.formatWithZeros(now.getMinutes());
 	};
 	return Constructor;
 }());

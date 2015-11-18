@@ -1,31 +1,20 @@
 Timer  = (function () {
 
 	function Constructor(_screen, _delta) {
-		var screen = _screen,
-			delta = _delta,
-			interval,
-			timeout;
-
-		this.getDelta = function () {
-			return delta;
-		};
-
-		this.getScreen = function () {
-			return screen;
-		};
-
-		this.setInterval = function (_interval) {
-			interval = _interval;
-		};
-		this.getInterval = function () {
-			return interval;
-		};
-		this.setTimeout = function (_timeout) {
-			timeout = _timeout;
-		};
-		this.getTimeout = function () {
-			return timeout;
-		};
+		var attributes = {
+            screen: _screen,
+			delta: _delta,
+			interval: null,
+			timeout: null
+        };
+        
+        this.get = function (key)  {
+            return attributes[key];
+        };
+        
+        this.set = function (key, value) {
+            attributes[key] = value;
+        };
 
 		this.init();
 		return this;
@@ -34,38 +23,40 @@ Timer  = (function () {
 
 	Constructor.prototype.init = function () {
 		this.render();
-		this.setTimeout(setTimeout(this.firstRerender.bind(this), this.getFirstDelay()));
+		this.set('timeout', setTimeout(this.firstRerender.bind(this), this.getFirstDelay()));
 	};
 
 	Constructor.prototype.kill = function () {
-		clearInterval(this.getInterval());
-		clearTimeout(this.getTimeout());
+		clearInterval(this.get('interval'));
+		clearTimeout(this.get('timeout'));
 	};
 
 	Constructor.prototype.firstRerender = function () {
-		this.setInterval(setInterval(this.render.bind(this), this.getDelta()));
+		this.set('interval', setInterval(this.render.bind(this), this.get('delta')));
 	};
 
 	Constructor.prototype.getFirstDelay = function () {
 		var now = new Date(),
-			nextInterval = Math.ceil(now/this.getDelta())*this.getDelta();
+			nextInterval = Math.ceil(now/this.get('delta'))*this.get('delta');
 		return nextInterval - now;
 	};
 
 	Constructor.prototype.render = function () {
-		this.getScreen().innerHTML = this.getTimeString(new Date());
+		this.get('screen').innerHTML = this.getTimeString(new Date());
 	};
 
 	Constructor.prototype.getTimeString = function () {
 		return '';
 	};
 
-	Constructor.pad2 = function (num) {
-		var str = String(num);
-		if (str.length === 1) {
-			str = '0' + str;
-		}
-		return str;
+	Constructor.formatWithZeros = function (num) {
+        var result;
+        if (num <= 9) {
+            result = '0' + num;
+        } else {
+            result = String(num);
+        }
+		return result;
 	};
 
 	return Constructor;

@@ -8,8 +8,8 @@ DateTimer  = (function () {
 	helper.extend(Constructor, Timer);
 
 	Constructor.prototype.getTimeString = function (now) {
-		return this.super.pad2(now.getDate()) + '/'
-			+ this.super.pad2(now.getMonth() + 1) + '/'
+		return this.super.formatWithZeros(now.getDate()) + '/'
+			+ this.super.formatWithZeros(now.getMonth() + 1) + '/'
 			+ now.getFullYear();
 	};
 	return Constructor;

@@ -1,49 +1,42 @@
 TimerContainer = (function () {
-	function Constructor(screen) {
-		var mode = 'short',
-			currentTimer = new ShortTimer(screen);
+	function Constructor(timerContainerEl) {
+		var attributes = {
+            mode: 'short',
+            containerEl: timerContainerEl,
+			currentTimer: new ShortTimer(timerContainerEl)
+        };
 
-		screen.addEventListener('click', leftClickHandler.bind(this));
-		screen.addEventListener('contextmenu', rightClickHandler.bind(this));
+		timerContainerEl.addEventListener('click', leftClickHandler.bind(this));
+		timerContainerEl.addEventListener('contextmenu', rightClickHandler.bind(this));
 
-		this.getMode = function () {
-			return mode;
-		};
-		this.setMode = function (newMode) {
-			mode = newMode;
-		};
-		this.getScreen = function () {
-			return screen;
-		};
-		this.getCurrentTimer = function () {
-			return currentTimer;
-		};
-		this.setCurrentTimer = function (newTimer) {
-			currentTimer = newTimer;
-		};
-		this.setTimer = function (newTimer) {
-			currentTimer = newTimer;
-		};
+        this.get = function (key) {
+            return attributes[key];
+        };
+        
+        this.set = function(key, value) {
+            attributes[key] = value;
+        };
+        
 	}
 
 	Constructor.prototype.changeMode = function (newMode) {
-		var currentTimer = this.getCurrentTimer();
-		this.setMode(newMode);
+		var currentTimer = this.get('currentTimer');
+		this.set('mode', newMode);
 		currentTimer.kill();
 		if (newMode === 'date') {
-			this.setCurrentTimer(new DateTimer(this.getScreen()));
+			this.set('currentTimer', new DateTimer(this.get('containerEl')));
 		} else if (newMode === 'short') {
-			this.setCurrentTimer(new ShortTimer(this.getScreen()));
+			this.set('currentTimer', new ShortTimer(this.get('containerEl')));
 		} else{
-			this.setCurrentTimer(new LongTimer(this.getScreen()));
+			this.set('currentTimer', new LongTimer(this.get('containerEl')));
 		}
 
 	};
 
 	function leftClickHandler() {
 		var newMode;
-		if (this.getMode() !== 'date') {
-			newMode = (this.getMode() === 'short' ? 'long' : 'short');
+		if (this.get('mode') !== 'date') {
+			newMode = (this.get('mode') === 'short' ? 'long' : 'short');
 			this.changeMode(newMode);
 		}
 	}
@@ -51,7 +44,7 @@ TimerContainer = (function () {
 	function rightClickHandler(e) {
 		var newMode;
 		e.preventDefault();
-		if (this.getMode() === 'date') {
+		if (this.get('mode') === 'date') {
 			newMode = 'short';
 		} else {
 			newMode = 'date';
